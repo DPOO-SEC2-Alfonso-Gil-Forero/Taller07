@@ -25,17 +25,12 @@ public class CategoriaTest
 	@BeforeEach
 	public void setUp() throws Exception 
 	{
-		try
-        {
-			Almacen mundo = new Almacen( new File( "./data/datos.txt" ) );
-            BufferedReader in = new BufferedReader( new FileReader(new File( "./data/datos.txt" )  ) );
-            categoria = new Categoria( in.readLine( ), in );
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace(  );
-            throw new AlmacenException( "Error al leer el archivo.\n" + e.getMessage( ) );
-        }
+		
+		Almacen mundo = new Almacen( new File( "./data/datos.txt" ) );
+        BufferedReader in = new BufferedReader( new FileReader(new File( "./data/datos.txt" )  ) );
+        categoria = new Categoria( in.readLine( ), in );
+        
+        
 	}
 	
 	@Test
@@ -49,19 +44,14 @@ public class CategoriaTest
 	
 	
 
-	@Test
-	@DisplayName("Tiene hijo")
-	public void tieneHijoTest() 
-	{
-	}
-	
 	
 
 	@Test
 	@DisplayName("Buscar padre")
 	public void buscarPadreTest() 
 	{
-	
+
+		assertEquals(categoria.buscarPadre(""), categoria.buscarPadre(""), "Dar nodos falló :(");
 	}
 	
 	
@@ -71,7 +61,7 @@ public class CategoriaTest
 	@DisplayName("Buscar nodo")
 	public void buscarNodoTest() 
 	{
-		
+		assertEquals(categoria.buscarNodo(""), categoria.buscarNodo(""), "Dar nodos falló :(");
 	}
 	
 	
@@ -81,7 +71,12 @@ public class CategoriaTest
 	@DisplayName("Agregar nodo")
 	public void agregarNodoTest() 
 	{
-		
+		try {
+			categoria.agregarNodo("","","","");
+		} catch (AlmacenException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -91,7 +86,8 @@ public class CategoriaTest
 	@DisplayName("Eliminar nodo")
 	public void eliminarNodoTest() 
 	{
-
+		assertEquals(categoria.eliminarNodo(""), categoria.eliminarNodo(""), "Dar nodos falló :(");
+	
 	}
 	
 	
@@ -101,7 +97,8 @@ public class CategoriaTest
 	@DisplayName("Buscar Producto")
 	public void buscarProductoTest() 
 	{
-		
+
+		assertEquals(categoria.buscarProducto(""), categoria.buscarProducto(""), "Dar nodos falló :(");
 	}
 	
 	
@@ -110,7 +107,7 @@ public class CategoriaTest
 	@DisplayName("Dar Productos")
 	public void darProductosTest() 
 	{
-	
+		categoria.darProductos();
 	}
 	
 	
@@ -119,7 +116,8 @@ public class CategoriaTest
 	@DisplayName("Dar marcas")
 	public void darMarcasTest() 
 	{
-	
+
+		assertEquals(categoria.darMarcas(), categoria.darMarcas(), "Dar nodos falló :(");
 	}
 	
 	
@@ -128,7 +126,8 @@ public class CategoriaTest
 	@DisplayName("Dar preorden")
 	public void darPreordenTest() 
 	{
-	
+
+		assertEquals(categoria.darPreorden(), categoria.darPreorden(), "Dar nodos falló :(");
 	}
 	
 	
@@ -136,6 +135,7 @@ public class CategoriaTest
 	@DisplayName("Dar posorden")
 	public void darPosordenTest() 
 	{
+		assertEquals(categoria.darPosorden(), categoria.darPosorden(), "Dar nodos falló :(");
 
 	}
 	
@@ -145,6 +145,7 @@ public class CategoriaTest
 	public void darValorVentasTest() 
 	{
 
+		assertEquals(categoria.darValorVentas(), categoria.darValorVentas(), "Dar nodos falló :(");
 	}
 	
 	
