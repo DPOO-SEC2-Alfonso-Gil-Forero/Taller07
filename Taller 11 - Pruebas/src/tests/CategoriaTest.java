@@ -1,6 +1,7 @@
 package tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import uniandes.cupi2.almacen.mundo.Almacen;
 import uniandes.cupi2.almacen.mundo.AlmacenException;
 import uniandes.cupi2.almacen.mundo.Categoria;
+import uniandes.cupi2.almacen.mundo.Marca;
 import uniandes.cupi2.almacen.mundo.NodoAlmacen;
 
 public class CategoriaTest 
@@ -23,7 +25,7 @@ public class CategoriaTest
 	private Categoria categoria;
 	
 	@BeforeEach
-	public void setUp() throws Exception 
+	public void setUp() throws Exception, AlmacenException
 	{
 		
 		Almacen mundo = new Almacen( new File( "./data/datos.txt" ) );
@@ -38,8 +40,17 @@ public class CategoriaTest
 	public void darNodosTest() 
 	{
 		List<NodoAlmacen> lista = new ArrayList<>();
+		NodoAlmacen nuevo1 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "11", "Tecnología") : new Marca( "11", "Tecnología");
+		NodoAlmacen nuevo2 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "113", "Hogar") : new Marca( "11", "Hogar");
+	    
+
+		assertEquals(nuevo1.darNombre(), categoria.darNodos().get(0).darNombre(), "Dar nodos falló :(");
+		assertEquals(nuevo1.darTipo(), categoria.darNodos().get(0).darTipo(), "Dar nodos falló :(");
+		assertEquals(nuevo1.darIdentificador(), categoria.darNodos().get(0).darIdentificador(), "Dar nodos falló :(");
+		assertEquals(nuevo2.darNombre(), categoria.darNodos().get(1).darNombre(), "Dar nodos falló :(");
+		assertEquals(nuevo2.darTipo(), categoria.darNodos().get(1).darTipo(), "Dar nodos falló :(");
+		assertEquals(nuevo2.darIdentificador(), categoria.darNodos().get(1).darIdentificador(), "Dar nodos falló :(");
 		
-		assertEquals(categoria.darNodos(), categoria.darNodos(), "Dar nodos falló :(");
 	}
 	
 	
@@ -50,8 +61,11 @@ public class CategoriaTest
 	@DisplayName("Buscar padre")
 	public void buscarPadreTest() 
 	{
-
-		assertEquals(categoria.buscarPadre(""), categoria.buscarPadre(""), "Dar nodos falló :(");
+		NodoAlmacen nuevo1 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "12", "Cupi2") : new Marca( "12", "Cupi2");
+		
+		assertEquals(nuevo1.darNombre(), categoria.buscarPadre("11").darNombre(), "Buscar Padre falló :(");
+		assertEquals(null, categoria.buscarPadre("1"), "Buscar Padre falló :(");
+		
 	}
 	
 	
@@ -61,7 +75,11 @@ public class CategoriaTest
 	@DisplayName("Buscar nodo")
 	public void buscarNodoTest() 
 	{
-		assertEquals(categoria.buscarNodo(""), categoria.buscarNodo(""), "Dar nodos falló :(");
+		NodoAlmacen nuevo1 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "11", "Tecnología") : new Marca( "11", "Tecnología");
+		
+		assertEquals(nuevo1.darNombre(), categoria.buscarNodo("11").darNombre(), "Buscar nodo falló :(");
+
+		assertNotEquals(nuevo1.darNombre(), categoria.buscarNodo("113").darNombre(), "Buscar nodo falló :(");
 	}
 	
 	
@@ -69,25 +87,32 @@ public class CategoriaTest
 
 	@Test
 	@DisplayName("Agregar nodo")
-	public void agregarNodoTest() 
+	public void agregarNodoTest() throws AlmacenException 
 	{
-		try {
-			categoria.agregarNodo("","","","");
-		} catch (AlmacenException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		NodoAlmacen nuevo1 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "12", "NuevoNodo") : new Marca( "12", "NuevoNodo");
+		NodoAlmacen nuevo2 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "114", "NuevoNodo") : new Marca( "114", "NuevoNodo");
+		categoria.agregarNodo("1",nuevo1);
+		categoria.agregarNodo("11",nuevo2);
+		categoria.agregarNodo("11","Categoria","1344","NuevoNodo");
+		
+		
 	}
-	
-	
 	
 
 	@Test
 	@DisplayName("Eliminar nodo")
-	public void eliminarNodoTest() 
+	public void eliminarNodoTest() throws AlmacenException 
 	{
-		assertEquals(categoria.eliminarNodo(""), categoria.eliminarNodo(""), "Dar nodos falló :(");
-	
+		NodoAlmacen nuevo1 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "11", "Tecnología") : new Marca( "11", "Tecnología");
+		
+		assertEquals(nuevo1.darNombre(), categoria.eliminarNodo("11").darNombre(), "Eliminar nodo falló :(");
+		
+		NodoAlmacen nuevo2 = "Categoria".equals( Categoria.TIPO ) ? new Categoria( "114", "NuevoNodo") : new Marca( "114", "NuevoNodo");
+		
+		categoria.agregarNodo("11",nuevo2);
+		categoria.eliminarNodo("114");
+		
 	}
 	
 	
@@ -98,7 +123,9 @@ public class CategoriaTest
 	public void buscarProductoTest() 
 	{
 
-		assertEquals(categoria.buscarProducto(""), categoria.buscarProducto(""), "Dar nodos falló :(");
+		assertEquals("LED 55\" Full HD Smart TV", categoria.buscarProducto("24881271").darNombre(), "Buscar Producto falló :(");
+		assertEquals("LED 49\" Smart TV Full HD", categoria.buscarProducto("31759941").darNombre(), "Buscar Producto falló :(");
+		assertNotEquals("LED 49\" Smart TV Full HD", categoria.buscarProducto("30557851").darNombre(), "Buscar Producto falló :(");
 	}
 	
 	
@@ -107,7 +134,8 @@ public class CategoriaTest
 	@DisplayName("Dar Productos")
 	public void darProductosTest() 
 	{
-		categoria.darProductos();
+		assertEquals("LED 55\" Full HD Smart TV", categoria.darProductos().get(0).darNombre(), "Dar Producto falló :(");
+		assertNotEquals("LED 55\" Full HD Smart TV", categoria.darProductos().get(1).darNombre(), "Dar Producto falló :(");
 	}
 	
 	
@@ -117,7 +145,11 @@ public class CategoriaTest
 	public void darMarcasTest() 
 	{
 
-		assertEquals(categoria.darMarcas(), categoria.darMarcas(), "Dar nodos falló :(");
+		assertEquals("SAMSUNG", categoria.darMarcas().get(0).darNombre(), "Dar Marcas falló :(");
+		assertEquals("LG", categoria.darMarcas().get(1).darNombre(), "Dar Marcas falló :(");
+		assertEquals("ASUS", categoria.darMarcas().get(2).darNombre(), "Dar Marcas falló :(");
+		assertEquals("Apple", categoria.darMarcas().get(3).darNombre(), "Dar Marcas falló :(");
+		assertNotEquals("HP", categoria.darMarcas().get(1).darNombre(), "Dar Marcas falló :(");
 	}
 	
 	
@@ -127,7 +159,10 @@ public class CategoriaTest
 	public void darPreordenTest() 
 	{
 
-		assertEquals(categoria.darPreorden(), categoria.darPreorden(), "Dar nodos falló :(");
+		assertEquals(categoria.buscarPadre("11").darNombre(), categoria.darPreorden().get(0).darNombre(), "Dar Preorden falló :(");
+		assertEquals("Cupi2", categoria.darPreorden().get(0).darNombre(), "Dar Preorden falló :(");
+		assertEquals("1112", categoria.darPreorden().get(4).darIdentificador(), "Dar Preorden falló :(");
+		assertNotEquals("1112", categoria.darPreorden().get(2).darIdentificador(), "Dar Preorden falló :(");
 	}
 	
 	
@@ -135,17 +170,19 @@ public class CategoriaTest
 	@DisplayName("Dar posorden")
 	public void darPosordenTest() 
 	{
-		assertEquals(categoria.darPosorden(), categoria.darPosorden(), "Dar nodos falló :(");
-
+		assertEquals("Televisores", categoria.darPreorden().get(2).darNombre(), "Dar Posorden falló :(");
+		assertEquals("Cupi2", categoria.darPosorden().get(20).darNombre(), "Dar Posorden falló :(");
+		assertEquals("1122", categoria.darPosorden().get(4).darIdentificador(), "Dar Posorden falló :(");
+		assertNotEquals("1122", categoria.darPosorden().get(2).darIdentificador(), "Dar Posorden falló :(");
 	}
 	
 	
 	@Test
 	@DisplayName("Dar valor ventas")
 	public void darValorVentasTest() 
-	{
-
-		assertEquals(categoria.darValorVentas(), categoria.darValorVentas(), "Dar nodos falló :(");
+	{	
+		assertEquals(0, categoria.darValorVentas(), "Dar valor ventas falló :(");
+		assertNotEquals(10000, categoria.darValorVentas(), "Dar valor ventas falló :(");
 	}
 	
 	
